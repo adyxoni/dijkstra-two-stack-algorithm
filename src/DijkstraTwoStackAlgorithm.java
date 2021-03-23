@@ -2,17 +2,28 @@
 import java.util.NoSuchElementException;
 import java.util.Stack;
 
+/* - - - - - - - - - - - - - -  HOW DOES DIJKSTRA'S TWO STACK ALGORITHM WORK - - - - - - - - - - - - - - - -
+take an arithmetic expression, with PROPERLY BALANCED parentheses
+example: ((2 + 5) + (4 + 3))
+Read the expression character by character, if the character is a number, push it onto the value stack and if an operator,
+push it onto the operator stack. Ignore left parentheses and when right parentheses are encountered:
+- pop an operator and two values (from their respective stacks)
+- perform an operation with those values (e.g. 4 + 3)
+- push the result onto the value stack
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+*/
+
+/* - - - - - - - - - - - - - - - - - - - - HOW DOES THIS PROGRAM WORK - - - - - - - - - - - - - - - - - - - - - -
+I haven't added exceptions or restricted input for entering UNBALANCED parentheses or incorrect expressions (yet)
+- example dividing with 0 and similar or putting ( 2+5 - (1-5) )
+ */
+
 public class DijkstraTwoStackAlgorithm {
 
-    class ResizingArrayStack<Item> { //copied from hw1
+    class ArrayStack<Item> {
 
         private Item[] stack;
         private int length;
-
-        public ResizingArrayStack() {
-            stack = (Item[]) new Object[8];
-            length = 0;
-        }
 
         public boolean isEmpty() {
             return length == 0;
@@ -22,18 +33,7 @@ public class DijkstraTwoStackAlgorithm {
             return length;
         }
 
-        private void resize(int capacity) {
-            assert capacity >= length;
-
-            Item[] copy = (Item[]) new Object[capacity];
-            for (int i = 0; i < length; i++) {
-                copy[i] = stack[i];
-            }
-            stack = copy;
-        }
-
         public void push(Item item) {
-            if (length == stack.length) resize(2 * stack.length);
             stack[length++] = item;
         }
 
@@ -42,10 +42,9 @@ public class DijkstraTwoStackAlgorithm {
             Item item = stack[length - 1];
             stack[length - 1] = null;
             length--;
-            if (length > 0 && length == stack.length / 4) resize(stack.length / 2);
             return item;
         }
-    }//hw1
+    }
 
     public static int calculate(String expression){
         Stack<String> operators = new Stack<String>();
@@ -110,5 +109,7 @@ public class DijkstraTwoStackAlgorithm {
     public static void main(String[] args) {
         System.out.println(calculate("((7-6)*(2+1))+(9/3)")); //result: 6
         System.out.println(calculate("( ( 5 + ( 3 * 8 ) ) - ( 2 * 7 ) )")); //result: 15
+        System.out.println(calculate("( ( ( 5 + ( 3 * 8 ) ) - ( 2 * 7 ) ) - 5 )")); //result: 10
+
     }
 }
