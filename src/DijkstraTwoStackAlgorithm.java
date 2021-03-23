@@ -15,7 +15,7 @@ push it onto the operator stack. Ignore left parentheses and when right parenthe
 
 /* - - - - - - - - - - - - - - - - - - - - HOW DOES THIS PROGRAM WORK - - - - - - - - - - - - - - - - - - - - - -
 I haven't added exceptions or restricted input for entering UNBALANCED parentheses or incorrect expressions (yet)
-- example dividing with 0 and similar or putting ( 2+5 - (1-5) )
+- example dividing with 0 and similar or putting ( 2+5 - (1-5) ). You have to use correct expressions for it to work.
  */
 
 public class DijkstraTwoStackAlgorithm {
