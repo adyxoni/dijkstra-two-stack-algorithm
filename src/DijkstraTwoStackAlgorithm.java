@@ -1,5 +1,6 @@
 
 import java.util.NoSuchElementException;
+import java.util.Scanner;
 import java.util.Stack;
 
 /* - - - - - - - - - - - - - -  HOW DOES DIJKSTRA'S TWO STACK ALGORITHM WORK - - - - - - - - - - - - - - - -
@@ -15,7 +16,8 @@ push it onto the operator stack. Ignore left parentheses and when right parenthe
 
 /* - - - - - - - - - - - - - - - - - - - - HOW DOES THIS PROGRAM WORK - - - - - - - - - - - - - - - - - - - - - -
 I haven't added exceptions or restricted input for entering UNBALANCED parentheses or incorrect expressions (yet)
-- example dividing with 0 and similar or putting ( 2+5 - (1-5) ). You have to use correct expressions for it to work.
+- example dividing with 0 and similar or putting ( 2+5 - (1-5) ). You have to use perfectly balanced parantheses for
+ expressions for it to work.
  */
 
 public class DijkstraTwoStackAlgorithm {
@@ -48,7 +50,7 @@ public class DijkstraTwoStackAlgorithm {
 
     public static int calculate(String expression){
         Stack<String> operators = new Stack<String>();
-        Stack<Integer> numbers = new Stack<Integer>();
+        Stack<Integer> values = new Stack<Integer>();
 
         String[] array = new String[expression.length()];
         for(int i = 0; i < expression.length(); i++){
@@ -57,31 +59,31 @@ public class DijkstraTwoStackAlgorithm {
 
         int i = 0;
         int currentNum1, currentNum2;
-        String test;
 
         while(i < expression.length()){
+
             if(array[i].equals(" ") || array[i].equals("(")){
                 i++;
                 continue;
             }
 
             if(array[i].equals(")")){
-                currentNum2 = numbers.get(numbers.size() - 1);
-                numbers.pop();
-                currentNum1 = numbers.get(numbers.size() - 1);
-                numbers.pop();
+                currentNum2 = values.get(values.size() - 1);
+                values.pop();
+                currentNum1 = values.get(values.size() - 1);
+                values.pop();
 
                 if(operators.get(operators.size() - 1).equals("+")) {
-                    numbers.push(currentNum1 + currentNum2);
+                    values.push(currentNum1 + currentNum2);
                     operators.pop();
                 } else if(operators.get(operators.size() - 1).equals("-")) {
-                    numbers.push(currentNum1 - currentNum2);
+                    values.push(currentNum1 - currentNum2);
                     operators.pop();
                 } else if(operators.get(operators.size() - 1).equals("*")) {
-                    numbers.push(currentNum1 * currentNum2);
+                    values.push(currentNum1 * currentNum2);
                     operators.pop();
                 } else if(operators.get(operators.size() - 1).equals("/")) {
-                    numbers.push(currentNum1 / currentNum2);
+                    values.push(currentNum1 / currentNum2);
                     operators.pop();
                 }
                 i++;
@@ -89,7 +91,7 @@ public class DijkstraTwoStackAlgorithm {
             }
 
             try{
-                numbers.push(Integer.parseInt(array[i]));
+                values.push(Integer.parseInt(array[i]));
             } catch(NumberFormatException e){
                 operators.push(array[i]);
             }
@@ -98,18 +100,23 @@ public class DijkstraTwoStackAlgorithm {
 
         int sum = 0;
         int j = 0;
-        while(j < numbers.size()){
-            sum += numbers.get(j);
+        while(j < values.size()){
+            sum += values.get(j);
             j++;
         }
 
         return sum;
     }
 
-    public static void main(String[] args) {
-        System.out.println(calculate("((7-6)*(2+1))+(9/3)")); //result: 6
-        System.out.println(calculate("( ( 5 + ( 3 * 8 ) ) - ( 2 * 7 ) )")); //result: 15
-        System.out.println(calculate("( ( ( 5 + ( 3 * 8 ) ) - ( 2 * 7 ) ) - 5 )")); //result: 10
+    public static int userInput(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter your expression: ");
+        String input = scanner.nextLine();
+        return calculate(input);
+    }
 
+
+    public static void main(String[] args) {
+        System.out.println(userInput());
     }
 }
