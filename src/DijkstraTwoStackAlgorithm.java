@@ -5,7 +5,10 @@ import java.util.Stack;
 
 /* - - - - - - - - - - - - - -  HOW DOES DIJKSTRA'S TWO STACK ALGORITHM WORK - - - - - - - - - - - - - - - -
 take an arithmetic expression, with PROPERLY BALANCED parentheses
-example: ((2 + 5) + (4 + 3))
+examples:
+    ((2 + 5) + (4 + 3))
+    ( ( 14 + 150 ) / 2 )
+    (((3*6)/2)*(5*2))
 Read the expression character by character, if the character is a number, push it onto the value stack and if an operator,
 push it onto the operator stack. Ignore left parentheses and when right parentheses are encountered:
 - pop an operator and two values (from their respective stacks)
@@ -15,10 +18,10 @@ push it onto the operator stack. Ignore left parentheses and when right parenthe
 */
 
 /* - - - - - - - - - - - - - - - - - - - - HOW DOES THIS PROGRAM WORK - - - - - - - - - - - - - - - - - - - - - -
-I haven't added exceptions or restricted input for entering UNBALANCED parentheses or incorrect expressions (yet)
-- example dividing with 0 and similar or putting ( 2+5 - (1-5) ). You have to use perfectly balanced parantheses for
- expressions for it to work.
- */
+There are no restrictions for entering UNBALANCED parentheses or wrong characters (characters that aren't numbers, round brackets or operations + - * /)
+or incorrect expressions (example dividing with 0). Follow the console during the application run to see what is happening with the characters and the stacks.
+Have fun!
+*/
 
 public class DijkstraTwoStackAlgorithm {
 
@@ -58,42 +61,113 @@ public class DijkstraTwoStackAlgorithm {
         }
 
         int i = 0;
-        int currentNum1, currentNum2;
+        int currentNum1, currentNum2, temporary, result;
+
+        wait(1000);
 
         while(i < expression.length()){
 
-            if(array[i].equals(" ") || array[i].equals("(")){
+            if(array[i].equals(" ")){
                 i++;
+                continue;
+            }else if(array[i].equals("(")){
+                System.out.println("Ignoring '(' character");
+                i++;
+                wait(1000);
                 continue;
             }
 
             if(array[i].equals(")")){
+                System.out.println("-- Values Stack --");
+                wait(1000);
+                for(int j = values.size() - 1; j >= 0; j--) {
+                    System.out.println(values.get(j));
+                    wait(1000);
+                }
+                wait(2000);
+
+                System.out.println("-- Operators Stack --");
+                wait(1000);
+                for(int j = operators.size() - 1; j >= 0; j--){
+                    System.out.println(operators.get(j));
+                    wait(1000);
+                }
+                wait(2000);
+
                 currentNum2 = values.get(values.size() - 1);
                 values.pop();
                 currentNum1 = values.get(values.size() - 1);
                 values.pop();
 
+
                 if(operators.get(operators.size() - 1).equals("+")) {
-                    values.push(currentNum1 + currentNum2);
+                    temporary = currentNum1 + currentNum2;
+                    values.push(temporary);
                     operators.pop();
+                    System.out.println("Removing number " + currentNum2 + " and " + currentNum1 + " from values stack.");
+                    wait(1000);
+                    System.out.println("Removing operator '+' from operators stack");
+                    wait(1000);
+                    System.out.println("Adding number "+ temporary + " to values stack ("+ currentNum1 +"+"+ currentNum2 +"="+ temporary +")");
+                    wait(2000);
                 } else if(operators.get(operators.size() - 1).equals("-")) {
-                    values.push(currentNum1 - currentNum2);
+                    temporary = currentNum1 - currentNum2;
+                    values.push(temporary);
                     operators.pop();
+                    System.out.println("Removing number " + currentNum2 + " and " + currentNum1 + " from values stack.");
+                    wait(1000);
+                    System.out.println("Removing operator '-' from operators stack");
+                    wait(1000);
+                    System.out.println("Adding number "+ temporary + " to values stack ("+ currentNum1 +"-"+ currentNum2 +"="+ temporary +")");
+                    wait(2000);
                 } else if(operators.get(operators.size() - 1).equals("*")) {
-                    values.push(currentNum1 * currentNum2);
+                    temporary = currentNum1 * currentNum2;
+                    values.push(temporary);
                     operators.pop();
+                    System.out.println("Removing number " + currentNum2 + " and " + currentNum1 + " from values stack.");
+                    wait(1000);
+                    System.out.println("Removing operator '*' from operators stack");
+                    wait(1000);
+                    System.out.println("Adding number "+ temporary + " to values stack ("+ currentNum1 +"*"+ currentNum2 +"="+ temporary +")");
+                    wait(2000);
                 } else if(operators.get(operators.size() - 1).equals("/")) {
-                    values.push(currentNum1 / currentNum2);
+                    temporary = currentNum1 / currentNum2;
+                    values.push(temporary);
                     operators.pop();
+                    System.out.println("Removing number " + currentNum2 + " and " + currentNum1 + " from values stack.");
+                    wait(1000);
+                    System.out.println("Removing operator '/' from operators stack");
+                    wait(1000);
+                    System.out.println("Adding number "+ temporary + " to values stack ("+ currentNum1 +"/"+ currentNum2 +"="+ temporary +")");
+                    wait(2000);
                 }
                 i++;
+                System.out.println("-- -- -- -- -- --");
+                System.out.println("Expression: " + expression);
+                wait(1000);
                 continue;
             }
 
             try{
-                values.push(Integer.parseInt(array[i]));
+                result = Integer.parseInt(array[i]);
+                values.push(result);
+                while(true){
+                    try{
+                        Integer.parseInt(array[i+1]);
+                    } catch(NumberFormatException e){
+                        break;
+                    }
+                    result = (result * 10) + Integer.parseInt(array[i+1]);
+                    i++;
+                }
+                values.pop();
+                values.push(result);
+                System.out.println("Adding "+ result + " to values stack");
+                wait(2000);
             } catch(NumberFormatException e){
                 operators.push(array[i]);
+                System.out.println("Adding "+ array[i] + " to operators stack");
+                wait(2000);
             }
             i++;
         }
@@ -115,8 +189,16 @@ public class DijkstraTwoStackAlgorithm {
         return calculate(input);
     }
 
+    public static void wait(int ms){
+        try {
+            Thread.sleep(ms);
+        } catch (InterruptedException e) {
+            System.out.println(e);
+        }
+    }
+
 
     public static void main(String[] args) {
-        System.out.println(userInput());
+        System.out.println("The result is: " + userInput());
     }
 }
